@@ -1,1 +1,267 @@
 name: ZenPacks.community.StandardUPS
+
+class_relationships:
+  - UPSDevice 1:MC UPSInput
+  - UPSDevice 1:MC UPSOutput
+  - UPSDevice 1:MC UPSByPass
+
+classes:
+  UPSDevice:
+    base: [zenpacklib.Device]
+    label: UPS Device
+    monitoring_templates: [UPSDevice]
+    properties:
+      model:
+        type: string
+        label: Model
+
+  UPSInput:
+    base: [zenpacklib.Component]
+    label: Input
+    monitoring_templates: [UPSInput]
+    properties:
+      index:
+        label: Index
+
+  UPSOutput:
+    base: [zenpacklib.Component]
+    label: Output
+    monitoring_templates: [UPSOutput]
+    properties:
+      index:
+        label: Index
+
+  UPSByPass:
+    base: [zenpacklib.Component]
+    label: Bypass
+    plural_label: Bypasses
+    monitoring_templates: [UPSByPass]
+    properties:
+      index:
+        label: Index
+
+device_classes:
+  /Power/UPS/StandardUPS:
+    zProperties:
+      zPythonClass: ZenPacks.community.StandardUPS.UPSDevice
+      zSnmpMonitorIgnore: false
+      zCollectorPlugins:
+        - zenoss.snmp.NewDeviceMap
+        - zenoss.snmp.DeviceMap
+        - zenoss.snmp.SnmpV3EngineIdMap
+        - zenoss.snmp.InterfaceMap
+        - community.snmp.StandardUPS
+      zDeviceTemplates:
+        - Device
+        - UPSDevice
+
+    templates:
+      UPSDevice:
+        targetPythonClass: ZenPacks.community.StandardUPS.UPSDevice
+        datasources:
+          ups:
+            type: Python
+            plugin_classname: ZenPacks.community.StandardUPS.dsplugins.UPSDevice.UPSDevice
+            datapoints:
+                upsBatteryStatus:
+                  rrdtype: GAUGE
+                upsEstimatedChargeRemaining:
+                  rrdtype: GAUGE
+                upsEstimatedMinutesRemaining:
+                  rrdtype: GAUGE
+                upsBatteryVoltage:
+                  rrdtype: GAUGE
+                upsBatteryCurrent:
+                  rrdtype: GAUGE
+                upsInputLineBads:
+                  rrdtype: GAUGE
+        graphs:
+          Battery Capacity:
+            height: 100
+            width: 1000
+            units: percent
+            miny: 0
+            graphpoints:
+              Remaining Capacity:
+                dpName: ups_upsEstimatedChargeRemaining
+                lineType: AREA
+          Battery RunTime remaining:
+            height: 100
+            width: 1000
+            units: minutes
+            miny: 0
+            graphpoints:
+              Run Time Remaining:
+                dpName: ups_upsEstimatedMinutesRemaining
+                lineType: AREA
+          Battery Voltage:
+            height: 100
+            width: 1000
+            units: Volt
+            graphpoints:
+              Actual voltage:
+                dpName: ups_upsBatteryVoltage
+                lineType: AREA
+          Battery Current:
+            height: 100
+            width: 1000
+            units: Ampere
+            graphpoints:
+              Current:
+                dpName: ups_upsBatteryCurrent
+                lineType: AREA
+          Bad Lines:
+            height: 100
+            width: 1000
+            units: lines
+            graphpoints:
+              Bad Lines:
+                dpName: ups_upsInputLineBads
+
+      UPSInput:
+        targetPythonClass: ZenPacks.community.StandardUPS.UPSInput
+        datasources:
+          upsinput:
+            type: Python
+            plugin_classname: ZenPacks.community.StandardUPS.dsplugins.UPSInput.UPSInput
+            datapoints:
+                frequency:
+                  rrdtype: GAUGE
+                voltage:
+                  rrdtype: GAUGE
+                current:
+                  rrdtype: GAUGE
+                truepower:
+                  rrdtype: GAUGE
+        graphs:
+          Frequency:
+            height: 100
+            width: 1000
+            units: Hz
+            miny: 0
+            graphpoints:
+              Frequency:
+                dpName: upsinput_frequency
+                lineType: AREA
+          Voltage:
+            height: 100
+            width: 1000
+            units: Volt
+            miny: 0
+            graphpoints:
+              Voltage:
+                dpName: upsinput_voltage
+                lineType: AREA
+          Current:
+            height: 100
+            width: 1000
+            units: Ampere
+            miny: 0
+            graphpoints:
+              Current:
+                dpName: upsinput_current
+                lineType: AREA
+          Power:
+            height: 100
+            width: 1000
+            units: Watt
+            miny: 0
+            graphpoints:
+              Power:
+                dpName: upsinput_truepower
+                lineType: AREA
+
+      UPSOutput:
+        targetPythonClass: ZenPacks.community.StandardUPS.UPSOutput
+        datasources:
+          upsoutput:
+            type: Python
+            plugin_classname: ZenPacks.community.StandardUPS.dsplugins.UPSOutput.UPSOutput
+            datapoints:
+                voltage:
+                  rrdtype: GAUGE
+                current:
+                  rrdtype: GAUGE
+                power:
+                  rrdtype: GAUGE
+                load:
+                  rrdtype: GAUGE
+        graphs:
+          Voltage:
+            height: 100
+            width: 1000
+            units: Volt
+            miny: 0
+            graphpoints:
+              Voltage:
+                dpName: upsoutput_voltage
+                lineType: AREA
+          Current:
+            height: 100
+            width: 1000
+            units: Ampere
+            miny: 0
+            graphpoints:
+              Current:
+                dpName: upsoutput_current
+                lineType: AREA
+          Power:
+            height: 100
+            width: 1000
+            units: Watt
+            miny: 0
+            graphpoints:
+              Power:
+                dpName: upsoutput_power
+                lineType: AREA
+          Load:
+            height: 100
+            width: 1000
+            units: percent
+            miny: 0
+            graphpoints:
+              Power:
+                dpName: upsoutput_load
+                lineType: AREA
+
+      UPSByPass:
+        targetPythonClass: ZenPacks.community.StandardUPS.UPSByPass
+        datasources:
+          upsbypass:
+            type: Python
+            plugin_classname: ZenPacks.community.StandardUPS.dsplugins.UPSByPass.UPSByPass
+            datapoints:
+                voltage:
+                  rrdtype: GAUGE
+                current:
+                  rrdtype: GAUGE
+                power:
+                  rrdtype: GAUGE
+        graphs:
+          Voltage:
+            height: 100
+            width: 1000
+            units: Volt
+            miny: 0
+            graphpoints:
+              Voltage:
+                dpName: upsbypass_voltage
+                lineType: AREA
+          Current:
+            height: 100
+            width: 1000
+            units: Ampere
+            miny: 0
+            graphpoints:
+              Current:
+                dpName: upsbypass_current
+                lineType: AREA
+          Power:
+            height: 100
+            width: 1000
+            units: Watt
+            miny: 0
+            graphpoints:
+              Power:
+                dpName: upsbypass_power
+                lineType: AREA
