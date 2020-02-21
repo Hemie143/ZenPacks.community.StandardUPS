@@ -75,9 +75,33 @@ device_classes:
                   rrdtype: GAUGE
                 upsInputLineBads:
                   rrdtype: GAUGE
+        thresholds:
+          Runtimeremaining:
+            type: MinMaxThreshold
+            dsnames: [ups_upsEstimatedMinutesRemaining]
+            eventClass: /Status/UPS/Battery
+            minval: 30
+            severity: 3
+          batcurrent:
+            type: MinMaxThreshold
+            dsnames: [ups_upsBatteryCurrent]
+            eventClass: /Status
+            maxval: 0
+            severity: 3
+          voltage_high:
+            type: MinMaxThreshold
+            dsnames: [ups_upsBatteryVoltage]
+            eventClass: /Status
+            maxval: 254
+            severity: 3
+          voltage_low:
+            type: MinMaxThreshold
+            dsnames: [ups_upsBatteryVoltage]
+            eventClass: /Status
+            minval: 206
+            severity: 3
         graphs:
           Battery Capacity:
-            height: 100
             width: 1000
             units: percent
             miny: 0
@@ -85,8 +109,8 @@ device_classes:
               Remaining Capacity:
                 dpName: ups_upsEstimatedChargeRemaining
                 lineType: AREA
+                sequence: 1
           Battery RunTime remaining:
-            height: 100
             width: 1000
             units: minutes
             miny: 0
@@ -94,29 +118,30 @@ device_classes:
               Run Time Remaining:
                 dpName: ups_upsEstimatedMinutesRemaining
                 lineType: AREA
+                sequence: 1
           Battery Voltage:
-            height: 100
             width: 1000
             units: Volt
             graphpoints:
               Actual voltage:
                 dpName: ups_upsBatteryVoltage
                 lineType: AREA
+                sequence: 1
           Battery Current:
-            height: 100
             width: 1000
             units: Ampere
             graphpoints:
               Current:
                 dpName: ups_upsBatteryCurrent
                 lineType: AREA
+                sequence: 1
           Bad Lines:
-            height: 100
             width: 1000
             units: lines
             graphpoints:
               Bad Lines:
                 dpName: ups_upsInputLineBads
+                sequence: 1
 
       UPSInput:
         targetPythonClass: ZenPacks.community.StandardUPS.UPSInput
@@ -133,9 +158,21 @@ device_classes:
                   rrdtype: GAUGE
                 truepower:
                   rrdtype: GAUGE
+        thresholds:
+          input_voltage_high:
+            type: MinMaxThreshold
+            dsnames: [upsinput_voltage]
+            eventClass: /Status
+            maxval: 254
+            severity: 3
+          input_voltage_low:
+            type: MinMaxThreshold
+            dsnames: [upsinput_voltage]
+            eventClass: /Status
+            minval: 206
+            severity: 3
         graphs:
           Frequency:
-            height: 100
             width: 1000
             units: Hz
             miny: 0
@@ -143,8 +180,8 @@ device_classes:
               Frequency:
                 dpName: upsinput_frequency
                 lineType: AREA
+                sequence: 1
           Voltage:
-            height: 100
             width: 1000
             units: Volt
             miny: 0
@@ -152,8 +189,8 @@ device_classes:
               Voltage:
                 dpName: upsinput_voltage
                 lineType: AREA
+                sequence: 1
           Current:
-            height: 100
             width: 1000
             units: Ampere
             miny: 0
@@ -161,8 +198,8 @@ device_classes:
               Current:
                 dpName: upsinput_current
                 lineType: AREA
+                sequence: 1
           Power:
-            height: 100
             width: 1000
             units: Watt
             miny: 0
@@ -170,6 +207,7 @@ device_classes:
               Power:
                 dpName: upsinput_truepower
                 lineType: AREA
+                sequence: 1
 
       UPSOutput:
         targetPythonClass: ZenPacks.community.StandardUPS.UPSOutput
@@ -186,9 +224,15 @@ device_classes:
                   rrdtype: GAUGE
                 load:
                   rrdtype: GAUGE
+        thresholds:
+          output_load:
+            type: MinMaxThreshold
+            dsnames: [upsoutput_load]
+            eventClass: /Status
+            maxval: 90
+            severity: 3
         graphs:
           Voltage:
-            height: 100
             width: 1000
             units: Volt
             miny: 0
@@ -196,8 +240,8 @@ device_classes:
               Voltage:
                 dpName: upsoutput_voltage
                 lineType: AREA
+                sequence: 1
           Current:
-            height: 100
             width: 1000
             units: Ampere
             miny: 0
@@ -205,8 +249,8 @@ device_classes:
               Current:
                 dpName: upsoutput_current
                 lineType: AREA
+                sequence: 1
           Power:
-            height: 100
             width: 1000
             units: Watt
             miny: 0
@@ -214,8 +258,8 @@ device_classes:
               Power:
                 dpName: upsoutput_power
                 lineType: AREA
+                sequence: 1
           Load:
-            height: 100
             width: 1000
             units: percent
             miny: 0
@@ -223,6 +267,7 @@ device_classes:
               Power:
                 dpName: upsoutput_load
                 lineType: AREA
+                sequence: 1
 
       UPSByPass:
         targetPythonClass: ZenPacks.community.StandardUPS.UPSByPass
@@ -239,7 +284,6 @@ device_classes:
                   rrdtype: GAUGE
         graphs:
           Voltage:
-            height: 100
             width: 1000
             units: Volt
             miny: 0
@@ -247,8 +291,8 @@ device_classes:
               Voltage:
                 dpName: upsbypass_voltage
                 lineType: AREA
+                sequence: 1
           Current:
-            height: 100
             width: 1000
             units: Ampere
             miny: 0
@@ -256,8 +300,8 @@ device_classes:
               Current:
                 dpName: upsbypass_current
                 lineType: AREA
+                sequence: 1
           Power:
-            height: 100
             width: 1000
             units: Watt
             miny: 0
@@ -265,3 +309,4 @@ device_classes:
               Power:
                 dpName: upsbypass_power
                 lineType: AREA
+                sequence: 1
